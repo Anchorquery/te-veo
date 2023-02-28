@@ -1,0 +1,12 @@
+export 'package:te_veo_app/screens/client/detail_product_screen.dart';
+export 'package:te_veo_app/screens/vendedor/plans/plans_screen.dart';
+export 'package:te_veo_app/screens/vendedor/service/service_covered_screen.dart';
+export 'package:te_veo_app/screens/vendedor/service/service_detail_screen.dart';
+export 'package:te_veo_app/screens/vendedor/service/service_screen.dart';
+export 'package:te_veo_app/screens/vendedor/upload_publication/upload_publication_screen.dart';
+export 'package:te_veo_app/screens/client/product_map/product_map_scree.dart';
+export 'package:te_veo_app/screens/client/search_category/search_category_screen.dart';
+export 'package:te_veo_app/screens/adminitrador/statistics/statistics_screen.dart';
+export 'package:te_veo_app/screens/vendedor/product/product_screen.dart';
+export 'package:te_veo_app/screens/client/rate_purchase/rate_purchase_screen.dart';
+export 'package:te_veo_app/screens/client/beginning/beginning_screen.dart';

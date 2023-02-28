@@ -1,0 +1,11 @@
+export 'package:te_veo_app/widgets/appBarUpload.dart';
+export 'package:te_veo_app/widgets/near_res_box.dart';
+export 'package:te_veo_app/widgets/product_service_img.dart';
+export 'package:te_veo_app/widgets/back_button.dart';
+export 'package:te_veo_app/widgets/logo_te_veo.dart';
+export 'package:te_veo_app/widgets/back_image.dart';
+export 'package:te_veo_app/widgets/custom_btn.dart';
+export 'package:te_veo_app/widgets/custom_dropdown.dart';
+export 'package:te_veo_app/widgets/custom_gradient_btn.dart';
+export 'package:te_veo_app/widgets/custom_text_field.dart';
+export 'package:te_veo_app/widgets/service_item.dart';

@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"path": "../provistask"
+		},
+		{
+			"path": "mobile_app"
+		}
+	],
+	"settings": {
+		"nuxt.isNuxtApp": false
+	}
+}
