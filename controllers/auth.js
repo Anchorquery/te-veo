@@ -72,9 +72,9 @@ const registerCtrl = async (req, res) => {
     await data.save();
 
     await SendUserValidationEmail({
-      email: user.email,
-      name: user.name,
-      token: user.token,
+      email: data.email,
+      name: data.name,
+      token: data.token,
     });
 
     res.send({ data });
