@@ -19,4 +19,32 @@ const validateRegister = [
   },
 ];
 
-module.exports = { validateLogin, validateRegister };
+const validateVerification = [
+  check('email').exists().notEmpty().isEmail(),
+  (req, res, next) => {
+    validateResult(req, res, next);
+  },
+];
+
+const validateCode = [
+  check('email').exists().notEmpty().isEmail(),
+  check('validationCode').exists().notEmpty(),
+  (req, res, next) => {
+    validateResult(req, res, next);
+  },
+];
+
+const validatePassword = [
+  check('password').exists().notEmpty().isLength({ min: 8, max: 15 }),
+  (req, res, next) => {
+    validateResult(req, res, next);
+  },
+];
+
+module.exports = {
+  validateLogin,
+  validateRegister,
+  validateVerification,
+  validateCode,
+  validatePassword,
+};

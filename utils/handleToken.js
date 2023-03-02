@@ -28,6 +28,12 @@ const tokenEmail = async () => {
   );
 };
 
+const codeVerifyEmail = async () => {
+  minm = 100000;
+  var maxm = 999999;
+  return Math.floor(Math.random() * (maxm - minm + 1)) + minm;
+};
+
 const verifyToken = async (token) => {
   try {
     return await jwt.verify(token, process.env.JWT_ACCESS_TOKEN_SECRET);
@@ -40,4 +46,10 @@ const decodeSign = (token) => {
   return jwt.decode(token, null);
 };
 
-module.exports = { tokenSign, decodeSign, verifyToken, tokenEmail };
+module.exports = {
+  tokenSign,
+  decodeSign,
+  verifyToken,
+  tokenEmail,
+  codeVerifyEmail,
+};

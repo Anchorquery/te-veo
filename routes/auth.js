@@ -5,8 +5,16 @@ const {
   loginCtrl,
   forgotPassword,
   newPassword,
+  validateUser,
+  newValidation,
 } = require('../controllers/auth');
-const { validateRegister, validateLogin } = require('../validators/auth');
+const {
+  validateRegister,
+  validateLogin,
+  validateVerification,
+  validateCode,
+  validatePassword,
+} = require('../validators/auth');
 const { validateId } = require('../validators/user');
 const { isAdmin } = require('../middleware/newAuth');
 const authMiddleware = require('../middleware/auth');
@@ -33,7 +41,10 @@ router.delete(
 router.post('/register', validateRegister, registerCtrl);
 router.post('/login', validateLogin, loginCtrl);
 
-router.post('/forget-password', forgotPassword);
-router.put('/forget-password/:token', newPassword);
+router.post('/forget-password', validateVerification, forgotPassword);
+router.put('/forget-password/:token', validatePassword, newPassword);
+
+router.post('/validate', validateVerification, newValidation);
+router.put('/validate-user', validateCode, validateUser);
 
 module.exports = router;

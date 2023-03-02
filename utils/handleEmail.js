@@ -29,4 +29,33 @@ const SendEmailPassword = async (datos) => {
   });
 };
 
-module.exports = { SendEmailPassword };
+const SendUserValidationEmail = async (datos) => {
+  const { email, name, token } = datos;
+  const transport = nodemailer.createTransport({
+    host: process.env.EMAIL_HOST,
+    port: process.env.EMAIL_PORT,
+    secure: false, // true for 465, false para otros puertos
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS,
+    },
+    tls: {
+      rejectUnauthorized: false,
+    },
+  });
+
+  const info = await transport.sendMail({
+    from: '"Te Veo" <soporte.teveoapp@gmail.com>',
+    to: email,
+    subject: 'valida tu correo',
+    text: 'Code',
+    html: `<p>Hola: ${name} este correo es para confirmar tu cuenta</p>
+      <p> ingresa el  siguiente codigo en tu aplicacion para confirmar tu cuenta: 
+      <p>${token}"></p>      
+      <p>Si tu no solicitaste este email, puedes ignorar el mensaje</p>     
+      
+      `,
+  });
+};
+
+module.exports = { SendEmailPassword, SendUserValidationEmail };
