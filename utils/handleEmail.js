@@ -1,7 +1,7 @@
 const nodemailer = require('nodemailer');
 
 const SendEmailPassword = async (datos) => {
-  const { email, name, token } = datos;
+  const { email, name, changePasswordCode } = datos;
   const transport = nodemailer.createTransport({
     host: process.env.EMAIL_HOST,
     port: process.env.EMAIL_PORT,
@@ -22,7 +22,7 @@ const SendEmailPassword = async (datos) => {
     text: 'Code',
     html: `<p>Hola: ${name} has solicitado reestablecer tu password</p>
       <p>Sigue el siguiente enlace para generar un nuevo password: 
-      <a href="${process.env.HOST_CLIENT}/forget-password/${token}">Reestablecer Password</a>      
+      <a href="${process.env.HOST_CLIENT}/forget-password/${changePasswordCode}">Reestablecer Password</a>      
       <p>Si tu no solicitaste este email, puedes ignorar el mensaje</p>     
       
       `,
@@ -30,7 +30,7 @@ const SendEmailPassword = async (datos) => {
 };
 
 const SendUserValidationEmail = async (datos) => {
-  const { email, name, token } = datos;
+  const { email, name, validationCode } = datos;
   const transport = nodemailer.createTransport({
     host: process.env.EMAIL_HOST,
     port: process.env.EMAIL_PORT,
@@ -51,7 +51,7 @@ const SendUserValidationEmail = async (datos) => {
     text: 'Code',
     html: `<p>Hola: ${name} este correo es para confirmar tu cuenta</p>
       <p> ingresa el  siguiente codigo en tu aplicacion para confirmar tu cuenta: 
-      <p>${token}"></p>      
+      <p>${validationCode}"></p>      
       <p>Si tu no solicitaste este email, puedes ignorar el mensaje</p>     
       
       `,

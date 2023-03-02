@@ -65,16 +65,16 @@ const registerCtrl = async (req, res) => {
 
     const data = await userModel.create(body);
 
-    const token = await codeVerifyEmail();
+    const validationCode = await codeVerifyEmail();
 
-    data.token = token;
+    data.validationCode = validationCode;
 
     await data.save();
 
     await SendUserValidationEmail({
       email: data.email,
       name: data.name,
-      token: data.token,
+      validationCode: data.validationCode,
     });
 
     res.send({ data });
@@ -92,14 +92,14 @@ const forgotPassword = async (req, res) => {
   }
 
   try {
-    const token = await tokenEmail();
-    user.token = token;
+    const changePasswordCode = await tokenEmail();
+    user.changePasswordCode = changePasswordCode;
     await usuario.save();
 
     await SendEmailPassword({
       email: user.email,
       name: user.name,
-      token: user.token,
+      changePasswordCode: user.changePasswordCode,
     });
 
     res.json({ msg: 'Codigo Enviado Exitosamente' });
@@ -109,15 +109,15 @@ const forgotPassword = async (req, res) => {
 };
 
 const newPassword = async (req, res) => {
-  const { token } = req.params;
+  const { changePasswordCode } = req.params;
   const { password } = req.body;
 
-  const user = await userModel.findOne({ token });
+  const user = await userModel.findOne({ changePasswordCode });
 
   if (user) {
     const pass = await encrypt(password);
     user.password = pass;
-    user.token = '';
+    user.changePasswordCode = '';
     await user.save();
     try {
       res.json({ msg: 'Password changed' });
@@ -135,9 +135,9 @@ const validateUser = async (req, res) => {
 
   const user = await userModel.findOne({ email });
 
-  if (user.token == validationCode) {
+  if (user.validationCode == validationCode) {
     user.confirm = true;
-    user.token = '';
+    user.validationCode = '';
     await user.save();
     try {
       res.json({ msg: 'User validated' });
@@ -145,7 +145,7 @@ const validateUser = async (req, res) => {
       console.log(error);
     }
   } else {
-    const error = new Error('Token invalid');
+    const error = new Error('validationCode invalid');
     return res.status(404).json({ msg: error.message });
   }
 };
@@ -163,14 +163,14 @@ const newValidation = async (req, res) => {
   }
 
   try {
-    const token = await codeVerifyEmail();
-    user.token = token;
+    const validationCode = await codeVerifyEmail();
+    user.validationCode = validationCode;
     await usuario.save();
 
     await SendUserValidationEmail({
       email: user.email,
       name: user.name,
-      token: user.token,
+      token: user.validationCode,
     });
 
     res.json({ msg: 'Codigo sended' });

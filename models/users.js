@@ -24,7 +24,10 @@ const UserSchema = new mongoose.Schema(
     password: {
       type: String,
     },
-    token: {
+    validationCode: {
+      type: String,
+    },
+    changePasswordCode: {
       type: String,
     },
     status: {

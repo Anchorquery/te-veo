@@ -42,7 +42,11 @@ router.post('/register', validateRegister, registerCtrl);
 router.post('/login', validateLogin, loginCtrl);
 
 router.post('/forget-password', validateVerification, forgotPassword);
-router.put('/forget-password/:token', validatePassword, newPassword);
+router.put(
+  '/forget-password/:changePasswordCode',
+  validatePassword,
+  newPassword,
+);
 
 router.post('/validate', validateVerification, newValidation);
 router.put('/validate-user', validateCode, validateUser);
