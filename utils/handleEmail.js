@@ -52,7 +52,7 @@ const SendUserValidationEmail = async (datos) => {
     text: 'Code',
     html: `<p>Hola: ${name} este correo es para confirmar tu cuenta</p>
       <p> ingresa el  siguiente codigo en tu aplicacion para confirmar tu cuenta: 
-      <p>${validationCode}"></p>      
+      <p>${validationCode}></p>      
       <p>Si tu no solicitaste este email, puedes ignorar el mensaje</p>     
       
       `,
