@@ -23,7 +23,7 @@ const validateVerification = [
  
   check('email').exists().notEmpty().isEmail(),
   (req, res, next) => {
-    console.log('hola')
+
     validateResult(req, res, next);
   },
 ];
