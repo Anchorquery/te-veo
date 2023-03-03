@@ -31,10 +31,11 @@ const SendEmailPassword = async (datos) => {
 
 const SendUserValidationEmail = async (datos) => {
   const { email, name, validationCode } = datos;
+  console.log(datos);
   const transport = nodemailer.createTransport({
     host: process.env.EMAIL_HOST,
     port: process.env.EMAIL_PORT,
-    secure: false, // true for 465, false para otros puertos
+    secure: true, // true for 465, false para otros puertos
     auth: {
       user: process.env.EMAIL_USER,
       pass: process.env.EMAIL_PASS,
@@ -45,7 +46,7 @@ const SendUserValidationEmail = async (datos) => {
   });
 
   const info = await transport.sendMail({
-    from: '"Te Veo" <soporte.teveoapp@gmail.com>',
+    from: '"Te Veo" <msdsptm@yandex.com>',
     to: email,
     subject: 'valida tu correo',
     text: 'Code',

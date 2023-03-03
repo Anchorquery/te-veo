@@ -152,7 +152,9 @@ const validateUser = async (req, res) => {
 
 const newValidation = async (req, res) => {
   const { email } = req.body;
+  console.log(email)
   const user = await userModel.findOne({ email });
+  console.log(user)
   if (!user) {
     const error = new Error('No user with this email');
     return res.status(404).json({ msg: error.message });
@@ -165,17 +167,17 @@ const newValidation = async (req, res) => {
   try {
     const validationCode = await codeVerifyEmail();
     user.validationCode = validationCode;
-    await usuario.save();
+    await user.save();
 
     await SendUserValidationEmail({
       email: user.email,
       name: user.name,
-      token: user.validationCode,
+      validationCode: user.validationCode,
     });
 
     res.json({ msg: 'Codigo sended' });
   } catch (e) {
-    handleHttpError(res, 'ERROR_GET_ITEM');
+    handleHttpError(res, e);
   }
 };
 
