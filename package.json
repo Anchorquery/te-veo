@@ -21,6 +21,7 @@
     "jsonwebtoken": "9.0.0",
     "mongoose": "^6.10.0",
     "mongoose-autopopulate": "^0.17.1",
+    "mongoose-paginate-v2": "^1.7.1",
     "mysql": "^2.18.1",
     "mysql2": "^2.3.3",
     "nodemailer": "^6.9.1",

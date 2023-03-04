@@ -5,15 +5,40 @@ const {
 } = require('../utils/handleError');
 
 const getItems = async (req, res) => {
-  const { title, pageNumber, nPerPage } = req.query;
-  nPerPage ? nPerPage : 30;
-  pageNumber ? pageNumber : 0;
+  let { title, pageNumber, nPerPage } = req.query;
+
+  // acá a que se lo estás asignando????
+  //nPerPage ? nPerPage : 30;
+// acá a que se lo estás asignando????
+ // pageNumber ? pageNumber : 1;
+
+
+
+  console.log(nPerPage );
+  // ambos quedan como undefinidos 
+
+
+  const sort = req.query.sort ?  req.query.sort : '-createdAt';
+
+  nPerPage = nPerPage ? nPerPage : 30;  
+  
+  pageNumber = pageNumber ? pageNumber : 1;
+
+  // DECLARO LAS OPCIONES QUE LE PASARÉ AL MÉTODO PAGINATE DE MONGOOSE PAGINATE
+
+  const options = {
+    page:pageNumber,
+    sort:sort,
+    limit:nPerPage,
+    populate: 'subCategory'
+  };
+
   try {
     const data = await catergoryModel
-      .find({ title: { $regex: new RegExp(title), $options: 'i' } })
-      .skip(pageNumber)
-      .limit(nPerPage)
-      .populate('subCategory');
+      .paginate({ title: { $regex: new RegExp(title), $options: 'i' } }, options)
+     // .skip(pageNumber)
+      //.limit(nPerPage)
+     // .populate('subCategory');
     res.send({ data });
   } catch (e) {
     console.log(e);
@@ -24,7 +49,7 @@ const getItems = async (req, res) => {
 const getItem = async (req, res) => {
   try {
     const { id } = req.params;
-    const data = await catergoryModel.findById(id);
+    const data = await catergoryModel.findById(id).populate('subCategory');
     res.send({ data });
   } catch (e) {
     handleHttpError(res, 'ERROR_GET_ITEM');
