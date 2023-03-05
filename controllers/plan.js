@@ -5,17 +5,26 @@ const {
 } = require('../utils/handleError');
 
 const getItembyName = async (req, res) => {
-  const { name } = req.query;
+  let { name, pageNumber, nPerPage } = req.query;
+
+  const sort = req.query.sort ? req.query.sort : '-createdAt';
+
+  nPerPage = nPerPage ? nPerPage : 30;
+
+  pageNumber = pageNumber ? pageNumber : 1;
+
+  const options = {
+    page: pageNumber,
+    sort: sort,
+    limit: nPerPage,
+  };
 
   try {
     if (name) {
-      let plans = await planModel
-        .find({
-          title: { $regex: name, $options: 'i' },
-        })
-        .populate('category')
-        .populate('subcategory')
-        .limit(30);
+      let plans = await planModel.paginate(
+        { name: { $regex: new RegExp(name), $options: 'i' } },
+        options,
+      );
       if (plans.length) {
         res.json(plans);
       } else {

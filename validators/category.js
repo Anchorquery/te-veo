@@ -8,7 +8,7 @@ const validateObjectDataCreate = [
 ];
 
 const validateObjectDataUpdate = [
-  check('title').exists().notEmpty(),
+ // check('title').exists().notEmpty(),
   (req, res, next) => {
     validateResult(req, res, next);
   },

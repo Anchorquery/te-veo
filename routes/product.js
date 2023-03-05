@@ -8,7 +8,6 @@ const {
   validateObjectDataUpdate,
 } = require('../validators/product');
 const {
-  getItembyName,
   getItems,
   getItem,
   createItem,
@@ -40,7 +39,6 @@ router.delete(
 );
 
 router.get('/', getItems);
-router.get('/name', getItembyName);
 router.get('/:id', validateId, getItem);
 router.post('/', authMiddleware, isAdmin, validateObjectDataCreate, createItem);
 router.put(

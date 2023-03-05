@@ -10,13 +10,23 @@ const CategorySchema = new mongoose.Schema(
     status: {
       type: Boolean,
       default: true,
-    },
+    }/*,
     subCategory: [
       {
         ref: 'subCategories',
         type: mongoose.Types.ObjectId,
       },
-    ],
+    ]*/,
+    picture:{
+      type:String,
+      default:''
+    },
+    
+    description:{
+      type:String,
+      default:''
+    }
+
   },
   {
     timestamps: true,

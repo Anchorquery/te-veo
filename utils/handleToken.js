@@ -35,8 +35,24 @@ const codeVerifyEmail = async () => {
 };
 
 const verifyToken = async (token) => {
-  try {
-    return await jwt.verify(token, process.env.JWT_ACCESS_TOKEN_SECRET);
+  try { 
+
+
+    const tokenData = await jwt.verify(token, process.env.JWT_ACCESS_TOKEN_SECRET);
+
+
+    // si el token no es valido, lanzo un error
+
+    if (!tokenData) {
+      return null;
+    }
+
+    // si el token es valido, devuelvo los datos del usuario
+
+    return tokenData;
+
+
+    
   } catch (e) {
     return null;
   }

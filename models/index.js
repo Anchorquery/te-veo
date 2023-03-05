@@ -1,6 +1,6 @@
 const models = {
   catergoryModel: require('./categories'),
-  subCatergoryModel: require('./subCategories'),
+  subCategoryModel: require('./subCategories'),
   productModel: require(`./products`),
   userModel: require(`./users`),
   serviceModel: require(`./services`),

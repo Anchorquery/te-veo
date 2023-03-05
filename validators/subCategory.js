@@ -2,6 +2,7 @@ const { check } = require('express-validator');
 const { validateResult } = require('../utils/handleValidator');
 const validateObjectDataCreate = [
   check('title').exists().notEmpty(),
+  check('category').exists().isMongoId(),
   (req, res, next) => {
     validateResult(req, res, next);
   },

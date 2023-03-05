@@ -13,6 +13,13 @@ const checkAuth = async (req, res, next) => {
     }
     const tokenData = await verifyToken(token);
 
+   if (!tokenData) {
+       handleErrorResponse(res, 'NOT_TOKEN_PROVIDED', 409);
+
+      return; 
+    }
+    
+
     if (tokenData._id) {
       return next();
     } else {

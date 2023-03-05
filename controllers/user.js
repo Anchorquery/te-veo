@@ -3,8 +3,25 @@ const { userModel } = require('../models');
 const { handleHttpError } = require('../utils/handleError');
 
 const getItems = async (req, res) => {
+  let { email, pageNumber, nPerPage } = req.query;
+
+  const sort = req.query.sort ? req.query.sort : '-createdAt';
+
+  nPerPage = nPerPage ? nPerPage : 30;
+
+  pageNumber = pageNumber ? pageNumber : 1;
+
+  const options = {
+    page: pageNumber,
+    sort: sort,
+    limit: nPerPage,
+  };
+
   try {
-    const data = await userModel.find().limit(30);
+    const data = await userModel.paginate(
+      { email: { $regex: new RegExp(email), $options: 'i' } },
+      options,
+    );
 
     res.send({ data });
   } catch (e) {

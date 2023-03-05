@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const mongoosePaginate = require('mongoose-paginate-v2');
 const ServiceSchema = new mongoose.Schema(
   {
     title: {
@@ -46,5 +47,5 @@ const ServiceSchema = new mongoose.Schema(
     autopopulate: true,
   },
 );
-ServiceSchema.plugin(require('mongoose-autopopulate'));
+ServiceSchema.plugin(mongoosePaginate);
 module.exports = mongoose.model('services', ServiceSchema);

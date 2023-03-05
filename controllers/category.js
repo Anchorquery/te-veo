@@ -1,21 +1,12 @@
-const { catergoryModel } = require('../models');
+const { catergoryModel, subCategoryModel } = require('../models');
+
 const {
   handleHttpError,
   handleErrorResponse,
 } = require('../utils/handleError');
 
 const getItems = async (req, res) => {
-  let { title, pageNumber, nPerPage } = req.query;
-
-  // acá a que se lo estás asignando????
-  //nPerPage ? nPerPage : 30;
-// acá a que se lo estás asignando????
- // pageNumber ? pageNumber : 1;
-
-
-
-  console.log(nPerPage );
-  // ambos quedan como undefinidos 
+  let { title, pageNumber, nPerPage,populate } = req.query;
 
 
   const sort = req.query.sort ?  req.query.sort : '-createdAt';
@@ -29,8 +20,7 @@ const getItems = async (req, res) => {
   const options = {
     page:pageNumber,
     sort:sort,
-    limit:nPerPage,
-    populate: 'subCategory'
+    limit:nPerPage
   };
 
   try {
@@ -39,6 +29,35 @@ const getItems = async (req, res) => {
      // .skip(pageNumber)
       //.limit(nPerPage)
      // .populate('subCategory');
+
+    if (populate) {
+
+
+
+      // busco todas las subcategorias que tengan el id de la categoria recorriendo
+
+      // el array de categorias que me devuelve el método paginate
+
+      for (let i = 0; i < data.docs.length; i++) {
+
+        let cat = data.docs[i];
+
+        // busco todas las subcategorias que tengan el id de la categoria
+
+        const subCategories = await subCategoryModel.find({ category: cat._id });
+
+
+
+
+        // agrego las subcategorias al objeto data
+
+        data.docs[i] = { ...cat._doc, subCategories };
+
+      }
+
+
+    }
+
     res.send({ data });
   } catch (e) {
     console.log(e);
@@ -49,9 +68,32 @@ const getItems = async (req, res) => {
 const getItem = async (req, res) => {
   try {
     const { id } = req.params;
-    const data = await catergoryModel.findById(id).populate('subCategory');
+
+    const { populate } = req.query;
+
+
+    let data = await catergoryModel.findById(id);
+
+    if (populate) {
+      // busco todas las subcategorias que tengan el id de la categoria
+
+      const subCategories = await subCategoryModel.find({ category: id });
+
+      // agrego las subcategorias al objeto data
+
+      data = { ...data._doc, subCategories };
+
+
+
+    }
+
+    
+
+
+
     res.send({ data });
   } catch (e) {
+    console.log(e);
     handleHttpError(res, 'ERROR_GET_ITEM');
   }
 };
@@ -68,6 +110,7 @@ const createItem = async (req, res) => {
     res.status(201);
     res.send({ data });
   } catch (e) {
+    console.log(e);
     handleHttpError(res, 'ERROR_CREATE_ITEMS');
   }
 };
@@ -75,11 +118,17 @@ const createItem = async (req, res) => {
 const updateItem = async (req, res) => {
   try {
     const { id } = req.params;
+
     const body = req.body;
-    const data = await catergoryModel.findByIdAndUpdate(id, body);
+
+
+      
+
+      const data = await catergoryModel.findByIdAndUpdate(id, body);
+
     res.send({ data });
   } catch (e) {
-    handleHttpError(res, 'ERROR_UPDATE_ITEMS');
+    handleHttpError(res, e);
   }
 };
 

@@ -1,20 +1,63 @@
-const { subCatergoryModel } = require('../models');
+const { subCategoryModel, productModel } = require('../models');
+
+
+// requiero mooose para validar el id de mongo
+
+const mongoose = require('mongoose');
+
 const {
   handleHttpError,
   handleErrorResponse,
 } = require('../utils/handleError');
 
 const getItems = async (req, res) => {
-  const { title, pageNumber, nPerPage } = req.query;
-  nPerPage ? nPerPage : 30;
-  pageNumber ? pageNumber : 0;
+  let { title, pageNumber, nPerPage, category } = req.query;
+
+  
+
+  // si category verifico sea un id de mongo
+
+  if (category) {
+    if (!mongoose.Types.ObjectId.isValid(category)) {
+      return handleErrorResponse(res, 'INVALID_ID');
+    }
+  }
+
+
+
+  const sort = req.query.sort ? req.query.sort : '-createdAt';
+
+  nPerPage = nPerPage ? nPerPage : 30;
+
+  pageNumber = pageNumber ? pageNumber : 1;
+
+
+
+  const options = {
+    page: pageNumber,
+    sort: sort,
+    limit: nPerPage,
+    populate: [
+      {
+        path: 'category',
+        select: { title: 1 },
+        protect: { subCategory: 1 },
+      },
+    ],
+    
+  };
   try {
-    const data = await subCatergoryModel
-      .find({
-        title: { $regex: new RegExp(title), $options: 'i' },
-      })
-      .skip(pageNumber)
-      .limit(nPerPage);
+
+    // busco las subcategorias, si category es true, busco las subcategorias de una categoria en especifico sino busco todas las subcategorias
+
+    const data = await subCategoryModel.paginate(
+      { title: { $regex: new RegExp(title), $options: 'i' }, category: category ? category : { $exists: true } },
+
+      options,
+    );
+
+
+
     res.send({ data });
   } catch (e) {
     console.log(e);
@@ -24,10 +67,47 @@ const getItems = async (req, res) => {
 
 const getItem = async (req, res) => {
   try {
-    const { id } = req.params;
-    const data = await subCatergoryModel.findById(id);
+    const { id  } = req.params;
+
+    const { products } = req.query;
+
+    let data = await subCategoryModel.findById(id).populate('category');
+
+
+    // si no hay ninguna subcategoria con ese id returno 404 error
+
+    if(!data){
+
+
+      return res.status(404).send({ error: 'Subcategory not found' });
+
+
+    }
+
+
+
+    if (products) {
+      
+
+      const product = await productModel.find({ subCategory: id });
+
+
+      // agrego los productos a la subcategoria , data es un const
+
+      data = { ...data._doc, products: product };
+
+
+
+
+
+
+    }
+
+
+
     res.send({ data });
   } catch (e) {
+    console.log(e);
     handleHttpError(res, 'ERROR_GET_ITEM');
   }
 };
@@ -35,15 +115,16 @@ const getItem = async (req, res) => {
 const createItem = async (req, res) => {
   try {
     const body = req.body;
-    const checkIsExist = await subCatergoryModel.findOne({ title: body.title });
+    const checkIsExist = await subCategoryModel.findOne({ title: body.title });
     if (checkIsExist) {
       handleErrorResponse(res, 'CATEGORY_EXISTS', 401);
       return;
     }
-    const data = await subCatergoryModel.create(body);
+    const data = await subCategoryModel.create(body);
     res.status(201);
     res.send({ data });
   } catch (e) {
+    
     handleHttpError(res, 'ERROR_CREATE_ITEMS');
   }
 };
@@ -52,7 +133,7 @@ const updateItem = async (req, res) => {
   try {
     const { id } = req.params;
     const body = req.body;
-    const data = await subCatergoryModel.findByIdAndUpdate(id, body);
+    const data = await subCategoryModel.findByIdAndUpdate(id, body);
     res.send({ data });
   } catch (e) {
     handleHttpError(res, 'ERROR_UPDATE_ITEMS');
@@ -62,7 +143,7 @@ const updateItem = async (req, res) => {
 const deleteItem = async (req, res) => {
   try {
     const { id } = req.params;
-    const deleteResponse = await subCatergoryModel.findByIdAndRemove({
+    const deleteResponse = await subCategoryModel.findByIdAndRemove({
       _id: id,
     });
     const data = {

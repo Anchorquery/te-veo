@@ -4,58 +4,88 @@ const {
   handleErrorResponse,
 } = require('../utils/handleError');
 
-const getItembyName = async (req, res) => {
-  const { title } = req.query;
-
-  try {
-    if (title) {
-      let products = await productModel
-        .find({
-          title: { $regex: title, $options: 'i' },
-        })
-        .populate('category')
-        .populate('subcategory')
-        .limit(30);
-      if (products.length) {
-        res.json(products);
-      } else {
-        res.status(404).send('Product not found');
-      }
-    } else {
-      let products = await productModel
-        .find()
-        .populate('category')
-        .populate('subcategory')
-        .limit(30);
-
-      if (products.length) {
-        res.json(products);
-      } else {
-        res.status(404).send('Product not found.');
-      }
-    }
-  } catch (err) {
-    handleHttpError(res, 'ERROR_GET_ITEM_BY_NAME');
-  }
-};
-
 const getItems = async (req, res) => {
-  const { title, pageNumber, nPerPage } = req.query;
-  nPerPage ? nPerPage : 30;
-  pageNumber ? pageNumber : 0;
+  let { title, pageNumber, nPerPage, lat, lng, radio } = req.query;
+
+  const sort = req.query.sort ? req.query.sort : '-createdAt';
+
+  nPerPage = nPerPage ? nPerPage : 30;
+
+  pageNumber = pageNumber ? pageNumber : 1;
+
+  let data;
+
+  const options = {
+    page: pageNumber,
+    sort: sort,
+    limit: nPerPage,
+    populate: [
+      {
+        path: 'category',
+        select: { title: 1 },
+        protect: { subCategory: 1 },
+      },
+      {
+        path: 'subCategory',
+        select: { title: 1 },
+      },
+    ],
+  };
 
   try {
-    const data = await productModel
-      .find({
-        title: { $regex: new RegExp(title), $options: 'i' },
-      })
-      .skip(pageNumber)
-      .limit(nPerPage)
-      .populate('category')
-      .populate('subcategory');
+
+
+    // si lat y lng son true, busco los productos por cercania, sino busco por titulo
+
+    if (lat && lng) {
+
+  
+
+      // recibo el radio en metros, lo paso a kilometros y lo divido por el radio de la tierra en kilometros
+
+
+
+      // 6378.1 es el radio de la tierra en kilometros
+
+      radio = radio ? radio / 6378.1 : 0.1 / 6378.1;
+
+
+      
+
+      // busco los productos por cercania 
+
+      //
+
+      data = await productModel.paginate(
+        {
+          location: {
+            $geoWithin: {
+              $centerSphere: [[lng, lat], radio ? radio : 0.1 ]
+            }
+          }
+        },
+        options,
+      );
+
+
+
+    } else {
+        
+        // busco los productos por titulo
+
+        console.log('busco por titulo')
+  
+         data = await productModel.paginate(
+          { title: { $regex: new RegExp(title), $options: 'i' } },
+          options,
+        );
+ 
+
+    }
+
     res.send({ data });
   } catch (e) {
-    handleHttpError(res, 'ERROR_GET_ITEMS');
+    handleHttpError(res, e);
   }
 };
 
@@ -65,7 +95,7 @@ const getItem = async (req, res) => {
     const data = await productModel
       .findById(id)
       .populate('category')
-      .populate('subcategory');
+      .populate('subCategory');
     res.send({ data });
   } catch (e) {
     handleHttpError(res, 'ERROR_GET_ITEM');
@@ -116,7 +146,6 @@ const deleteItem = async (req, res) => {
 module.exports = {
   getItems,
   getItem,
-  getItembyName,
   createItem,
   updateItem,
   deleteItem,

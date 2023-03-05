@@ -20,10 +20,8 @@ const validateRegister = [
 ];
 
 const validateVerification = [
- 
   check('email').exists().notEmpty().isEmail(),
   (req, res, next) => {
-
     validateResult(req, res, next);
   },
 ];

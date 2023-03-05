@@ -137,14 +137,13 @@ const validateUser = async (req, res) => {
 
   if (user.validationCode == validationCode) {
     user.confirm = true;
-    user.status = true;
     user.validationCode = '';
     await user.save();
     try {
       res.json({ msg: 'User validated' });
     } catch (error) {
       console.log(error);
-    } 
+    }
   } else {
     const error = new Error('validationCode invalid');
     return res.status(404).json({ msg: error.message });
@@ -168,11 +167,13 @@ const newValidation = async (req, res) => {
   try {
     const validationCode = await codeVerifyEmail();
     user.validationCode = validationCode;
+
     await user.save();
 
     await SendUserValidationEmail({
       email: user.email,
       name: user.name,
+
       validationCode: user.validationCode,
     });
 

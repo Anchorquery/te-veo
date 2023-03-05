@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const mongoosePaginate = require('mongoose-paginate-v2');
 const PlanSchema = new mongoose.Schema(
   {
     name: {
@@ -22,4 +23,5 @@ const PlanSchema = new mongoose.Schema(
     versionKey: false,
   },
 );
+PlanSchema.plugin(mongoosePaginate);
 module.exports = mongoose.model('plans', PlanSchema);
