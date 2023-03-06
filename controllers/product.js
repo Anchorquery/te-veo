@@ -4,6 +4,8 @@ const {
   handleErrorResponse,
 } = require('../utils/handleError');
 
+const { ObjectId } = require('mongodb');
+
 const getItems = async (req, res) => {
   let { title, pageNumber, nPerPage, lat, lng, radio } = req.query;
 
@@ -105,16 +107,21 @@ const getItem = async (req, res) => {
 const createItem = async (req, res) => {
   try {
     const { body } = req;
-    const checkIsExist = await productModel.findOne({ title: body.title });
-    if (checkIsExist) {
-      handleErrorResponse(res, 'PRODUCT_EXISTS', 401);
-      return;
-    }
+   // const checkIsExist = await productModel.findOne({ title: body.title });
+   // if (checkIsExist) {
+     // handleErrorResponse(res, 'PRODUCT_EXISTS', 401);
+    //  return;
+   // }
+
+
+    body.seller = req.user._id;
+
+
     const data = await productModel.create(body);
     res.status(201);
     res.send({ data });
   } catch (e) {
-    handleHttpError(res, 'ERROR_CREATE_ITEMS');
+    handleHttpError(res, e);
   }
 };
 
@@ -122,6 +129,25 @@ const updateItem = async (req, res) => {
   try {
     const { id } = req.params;
     const body = req.body;
+
+    // SACO ID DEL USUARIO QUE ESTA LOGUEADO
+
+
+    const user = req.user._id;
+
+    // verifico que el usuario que esta logueado sea el mismo que creo el producto
+
+    const checkIsExist = await productModel.findOne({ _id: id, seller: user });
+
+    if (!checkIsExist) {
+      handleErrorResponse(res, 'PRODUCT_NOT_FOUND', 401);
+      return;
+    }
+
+    
+
+
+
     const data = await productModel.findByIdAndUpdate(id, body);
     res.send({ data });
   } catch (e) {

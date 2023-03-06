@@ -1,4 +1,5 @@
 const { verifyToken } = require('../utils/handleToken');
+
 const {
   handleErrorResponse,
   handleHttpError,
@@ -11,16 +12,22 @@ const checkAuth = async (req, res, next) => {
       handleErrorResponse(res, 'NOT_TOKEN_PROVIDED', 409);
       return;
     }
-    const tokenData = await verifyToken(token);
+    const tokenData = await verifyToken(res ,token);
 
    if (!tokenData) {
+    console.log('tokenData', tokenData);
        handleErrorResponse(res, 'NOT_TOKEN_PROVIDED', 409);
 
       return; 
     }
+
+    
     
 
     if (tokenData._id) {
+
+
+
       return next();
     } else {
       handleErrorResponse(res, 'NOT_ALLOW', 409);

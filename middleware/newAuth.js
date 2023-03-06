@@ -4,7 +4,7 @@ const { verifyToken } = require('../utils/handleToken');
 const isAdmin = async (req, res, next) => {
   const token = req.headers['x-access-token'];
   if (token) {
-    const decodedToken = await verifyToken(token);
+    const decodedToken = await verifyToken(req,token);
     if (decodedToken.role === 'admin') {
       return next();
     }

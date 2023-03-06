@@ -1,6 +1,8 @@
 const jwt = require('jsonwebtoken');
-
+const { userModel } = require('../models');
+const { ObjectId } = require('mongodb');
 const tokenSign = async (user) => {
+
   return jwt.sign(
     {
       _id: user._id,
@@ -34,18 +36,45 @@ const codeVerifyEmail = async () => {
   return Math.floor(Math.random() * (maxm - minm + 1)) + minm;
 };
 
-const verifyToken = async (token) => {
+const verifyToken = async (req,token) => {
   try { 
 
 
     const tokenData = await jwt.verify(token, process.env.JWT_ACCESS_TOKEN_SECRET);
 
+ 
+
 
     // si el token no es valido, lanzo un error
 
-    if (!tokenData) {
+    if (!tokenData) { 
       return null;
     }
+
+
+    const user = await userModel.findById( ObjectId(tokenData._id));
+
+
+
+    if (!user) {
+
+      console.log('USER_NOT_FOUND', 401);
+      return null;
+    }
+
+    if (!user.status) {
+
+      console.log('USER_NOT_ACTIVE', 401);
+      return null;
+    }
+
+    // añado el  usuario a req.user eliminando el password
+
+    delete user.password;
+
+    req.user = user;
+
+
 
     // si el token es valido, devuelvo los datos del usuario
 

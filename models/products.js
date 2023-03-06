@@ -15,31 +15,41 @@ const ProductSchema = new mongoose.Schema(
       min: 0,
       required: true,
     },
+    newOrUsed: {
+      type: String,
+      enum: ['new', 'used'],
+      default: 'new',
+    },
+    usedState: {
+      type: String,
+      enum: ['1_a_2_semanas_+', '6_meses_+', '1_mes_+', '8_meses_+', '3_meses_+', 'Más_de_un_año']
+    },
     state: {
       type: Boolean,
       default: true,
     },
-  /*  x_latitude: {
-      type: String,
-      required: true,
-    },
-    y_latitude: {
-      type: String,
-      required: true,
-    },*/
-    //añdo la localizacion del producto en el mapa con el tipo de dato Point de mongo db y añado el indice 2dsphere para que funcione la busqueda  geoespacial de mongo db , y añado longitud y latitud para que funcione la busqueda geoespacial de mongo db
     location: {
       type: { type: String, default: 'Point' },
       coordinates: { type: [Number], default: [0, 0] }
     },
-
+    //añado descripcion de la ubicacion
+    locationDescription: {
+      type: String,
+    },
     quantity: {
       type: Number,
       min: 0,
-      default: 0,
+      default: 1,
     },
-    image: {
-      type: String,
+    images: [
+      {
+        type: String,
+      },
+    ],
+    seller: {
+      ref: 'users',
+      type: mongoose.Types.ObjectId,
+      required: true,
     },
     category: {
       ref: 'categories',
