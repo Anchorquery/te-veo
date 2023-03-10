@@ -22,7 +22,7 @@ const ProductSchema = new mongoose.Schema(
     },
     usedState: {
       type: String,
-      enum: ['1_a_2_semanas_+', '6_meses_+', '1_mes_+', '8_meses_+', '3_meses_+', 'Más_de_un_año']
+      enum: ['1_a_2_semanas_+', '6_meses_+', '1_mes_+', '8_meses_+', '3_meses_+', 'mas_de_un_ano']
     },
     state: {
       type: Boolean,
